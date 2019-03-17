@@ -21,11 +21,13 @@ $pi_name="";
 $seed="";
 $ptype="0";
 $roses_id="";
-$maxsize="20000000";
+$maxsize="200000000";
 $clobber="0";
 $index="0";
 $list="";
 
+
+if (isset($_GET['processed'])) $processed=trim($_GET['processed']);
 if (isset($_POST['pi_name'])) $pi_name=trim($_POST['pi_name']);
 if (isset($_POST['seed'])) $seed=trim($_POST['seed']);
 if (isset($_POST['ptype'])) $ptype=trim($_POST['ptype']);
@@ -45,7 +47,7 @@ $clobber=filter_var($clobber, FILTER_SANITIZE_STRING);
 $list=filter_var($list, FILTER_SANITIZE_STRING);
 
 if (is_numeric($maxsize)) $fmaxsize=floatval($maxsize);
-
+	
 if (!valid_str($pi_name) || !valid_str($roses_id)){ 
  $mess="Error uploading - valid ROSES ID and PI Name required";
  json_print($mess);
@@ -55,7 +57,7 @@ if (!valid_str($pi_name) || !valid_str($roses_id)){
 // Bail if something went wrong or no files selected for upload
 
 if (!isset($_FILES["files"])){
- $mess="Error uploading - check server configuration";
+ $mess="Error uploading files - check server configuration";
  json_print($mess);
  exit;
 }
@@ -116,6 +118,24 @@ for($i=0; $i<$total; $i++) {
  $rsize=$_FILES["files"]["size"][$i];
  $rtype=$_FILES["files"]["type"][$i];
 
+// Check for error codes
+
+ $rerror=$_FILES["files"]["error"][$i]; 
+ 
+ if ($rerror === 1) {
+  $omess="Exceeds maximum total file upload size"; 
+  $amess=['file' => $file, 'result' => $omess];
+  array_push($rmess,$amess);
+  continue;
+ }
+ 
+ if ($rerror === 2 || $rsize > $fmaxsize) {
+  $omess="Exceeds maximum individual file upload size ($maxsize bytes)"; 
+  $amess=['file' => $file, 'result' => $omess];
+  array_push($rmess,$amess);
+  continue;
+ }
+ 
  if (!valid_str($file)) {
   $omess="Blank file name";
   $amess=['file' => 'blank', 'result' => $omess];
@@ -148,16 +168,6 @@ for($i=0; $i<$total; $i++) {
  
  if ($rsize === 0) {
   $omess="Zero file size";
-  $amess=['file' => $file, 'result' => $omess];
-  array_push($rmess,$amess);
-  continue;
- }
- 
-// Check for error codes
-
- $rerror=$_FILES["files"]["error"][$i]; 
- if ($rerror === 1 || $rerror === 2 || $rsize > $fmaxsize) {
-  $omess="Exceeds maximum upload size ($maxsize bytes)"; 
   $amess=['file' => $file, 'result' => $omess];
   array_push($rmess,$amess);
   continue;

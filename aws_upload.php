@@ -29,6 +29,7 @@ $seed=filter_var($seed, FILTER_SANITIZE_STRING);
 $index=filter_var($index, FILTER_SANITIZE_STRING);
 $clobber=filter_var($clobber, FILTER_SANITIZE_STRING);
 $list=filter_var($list, FILTER_SANITIZE_STRING);
+$maxsize="200000000";
 
 // $pytpe=0 = > files supporting publication
 // $ptype=1 = > presentation file
@@ -111,7 +112,7 @@ echo <<<_END
 $(document).ready(function (e) {
 				 
                 var nofiles = "<i>No files selected.</i>";	
-				var roses_id="$roses_id" , seed="$seed", pi_name="$pi_name", ptype="$ptype" ,index="$index", maxsize=20000000.,clobber="$clobber", list="$list";
+				var roses_id="$roses_id" , seed="$seed", pi_name="$pi_name", ptype="$ptype" ,index="$index", maxsize="$maxsize",clobber="$clobber", list="$list";
 			    var pattern=/\.(pdf|gif|jpe?g|pptx?|docx?|bmp|mpe?g4?|png|txt|tiff?|sav|xlsx?|dat)$/i;
 	            var spattern=pattern.toString();
 				
@@ -154,7 +155,7 @@ $(document).ready(function (e) {
 			    	form_data.append("maxsize",maxsize.toString());
 			    	form_data.append("pattern",spattern);
 					form_data.append("clobber",clobber);
-					form_data.append("list",list);
+     				form_data.append("list",list);
 					
                     $.ajax({
                         url: 'aws_post.php', 
@@ -205,7 +206,7 @@ $(document).ready(function (e) {
     $.ajax({
      async:false,
 	 cache:false,
-     url :'aws_REQUEST.php',
+     url :'aws_get.php',
 	 data: {seed:seed,index:index},
      dataType:"jsonp",
 	 jsonp:"callback",
@@ -229,7 +230,7 @@ $(document).ready(function (e) {
 	var txt = "", dsize=-1, fsize="";
 	var checked="<input onclick='aws_set($seed,$index)' type='checkbox' name='selection' checked ";
 	var disabled="<input onclick='aws_set($seed,$index)' type='checkbox' name='selection' disabled ";
-	var toobig=" ...Exceeds maximum upload size ("+maxsize.toString()+" bytes)";
+	var toobig=" ...Exceeds maximum individual file upload size ("+maxsize.toString()+" bytes)";
 	var toosmall=" ...Zero size file";
 	var nofit=" ...Unsupported file type";
 	
