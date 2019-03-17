@@ -1,7 +1,8 @@
 <?php
 
 // Delete uploaded file 
-// 25-Aug-2018, Zarro (ADNET) - written   
+// 25-Aug-2018, Zarro (ADNET) - written  
+// 17-Mar-2019, Zarro (ADNET) - merged DEV and PRO
 
 require_once './aws_lib.php';
 
