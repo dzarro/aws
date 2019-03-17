@@ -4,6 +4,7 @@
 // 25-Aug-2018, Zarro (ADNET) - written   
 //  5-Feb-2019, Zarro (ADNET) - added check for expired file
 //  6-Feb-2019, Zarro (ADNET) - added STATUS key
+// 17-Mar-2019, Zarro (ADNET) - merged DEV and PRO
 
 require_once './aws_lib.php';
 
